@@ -1,6 +1,12 @@
 defmodule Sender do
+  def send_email("wako@animaniacs.com") do
+    Process.sleep(10 * 1000)
+    IO.puts("Email to wako was not sent")
+    {:error, "email_junk"}
+  end
+
   def send_email(email) do
-    Process.sleep(7 * 1000)
+    Process.sleep(2 * 1000)
     IO.puts("Email to #{email} sent")
     {:ok, "email_sent"}
   end
