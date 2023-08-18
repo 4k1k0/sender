@@ -1,8 +1,6 @@
 defmodule Sender do
-  def send_email("wako@animaniacs.com") do
-    Process.sleep(10 * 1000)
-    IO.puts("Email to wako was not sent")
-    {:error, "email_junk"}
+  def send_email("wako@animaniacs.com" = email) do
+    raise "Oops, couldn't sned email to #{email}!"
   end
 
   def send_email(email) do
@@ -13,8 +11,8 @@ defmodule Sender do
 
 
   def notify_all(emails) do
-    emails
-    |> Task.async_stream(&send_email/1, max_concurrency: 2, on_timeout: :kill_task)
+    Sender.EmailTaskSupervisor
+    |> Task.Supervisor.async_stream_nolink(emails, &send_email/1)
     |> Enum.to_list()
   end
 end
