@@ -2,12 +2,10 @@ defmodule Jobber.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
-
   use Application
 
   @impl true
   def start(_type, _args) do
-
     job_runner_config = [
       strategy: :one_for_one,
       max_seconds: 30,
@@ -15,6 +13,7 @@ defmodule Jobber.Application do
     ]
 
     children = [
+      {Registry, keys: :unique, name: Jobber.JobRegistry},
       {DynamicSupervisor, job_runner_config}
     ]
 
