@@ -1,5 +1,5 @@
 defmodule Jobber.Job do
-  use GenServer
+  use GenServer, restart: :transient
   require Logger
 
   defstruct [:work, :id, :max_retries, retries: 0, status: "new"]
@@ -49,6 +49,10 @@ defmodule Jobber.Job do
 
   def handle_info(:retry, state) do
     {:noreply, state, {:continue, :run}}
+  end
+
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args)
   end
 
   defp random_job_id() do
