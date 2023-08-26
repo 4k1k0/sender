@@ -2,9 +2,12 @@ defmodule PageConsumer do
   use GenStage
   require Logger
 
-  def start_link(_args) do
-    initial_state = []
-    GenStage.start_link(__MODULE__, initial_state)
+  def start_link(event) do
+    Logger.info("PageConsumer received #{event}")
+
+    Task.start_link(fn ->
+      Scrapper.work()
+    end)
   end
 
   def init(initial_state) do
