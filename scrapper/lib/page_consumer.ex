@@ -6,7 +6,7 @@ defmodule PageConsumer do
     Logger.info("PageConsumer received #{event}")
 
     Task.start_link(fn ->
-      Scrapper.work()
+      Scraper.work()
     end)
   end
 
@@ -19,7 +19,7 @@ defmodule PageConsumer do
   def handle_events(events, _from, state) do
     Logger.info("PagerConsumer received #{inspect(events)}")
     Enum.each(events, fn _page ->
-      Scrapper.work()
+      Scraper.work()
     end)
     {:noreply, [], state}
   end
