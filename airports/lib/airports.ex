@@ -12,18 +12,19 @@ defmodule Airports do
     |> Flow.map(fn row ->
       [row] = CSV.parse_string(row, skip_headers: false)
       %{
-        id: :binary.copy(Enum.at(row, 0)),
-        type: :binary.copy(Enum.at(row, 2)),
-        name: :binary.copy(Enum.at(row, 3)),
-        country: :binary.copy(Enum.at(row, 8)),
+        id: Enum.at(row, 0),
+        type: Enum.at(row, 2),
+        name: Enum.at(row, 3),
+        country: Enum.at(row, 8),
       }
     end)
     |> Flow.reject(&(&1.type == "closed"))
     |> Flow.partition(key: {:key, :country})
-    |> Flow.reduce(fn -> %{} end, fn item, acc ->
-      Map.update(acc, item.country, 1, &(&1 + 1))
-    end)
+    |> Flow.group_by(& &1.country)
+    |> Flow.map(fn {country, data} -> {country, Enum.count(data)} end)
+    |> Flow.take_sort(10, fn {_, a}, {_, b} -> a > b end)
     |> Enum.to_list
+    |> List.flatten
   end
 
 end
