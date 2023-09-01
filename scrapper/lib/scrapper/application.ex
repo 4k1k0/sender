@@ -8,11 +8,9 @@ defmodule Scrapper.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Registry, keys: :unique, name: ProducerConsumerRegistry},
       PageProducer,
-      producer_consumer_spec(id: 1),
-      producer_consumer_spec(id: 2),
-      PageConsumerSupervisor
+      PageConsumerSupervisor,
+      OnlinePageProducerConsumer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
